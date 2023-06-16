@@ -1,1 +1,3 @@
-module.exports = {};
+module.exports = {
+  CrudRepository: require("./crud-repository"),
+};
