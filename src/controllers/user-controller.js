@@ -23,6 +23,27 @@ async function createUser(req, res) {
   }
 }
 
+/**
+ * POST: /signin
+ * req.body: {email: 'abc@xyz.com', password: 'aksjsf'}
+ */
+async function signin(req, res) {
+  try {
+    const jwt = await UserService.signin({
+      email: req.body.email,
+      password: req.body.password,
+    });
+
+    SuccessResponse.message = "Successfully signed in the User";
+    SuccessResponse.data = jwt;
+
+    return res.status(StatusCodes.CREATED).json(SuccessResponse);
+  } catch (error) {
+    ErrorResponse.error = error;
+    return res.status(error.statuscode).json(ErrorResponse);
+  }
+}
 module.exports = {
   createUser,
+  signin,
 };

@@ -8,9 +8,17 @@ const router = express.Router();
  * route->  /api/v1/signup - POST
  */
 router.post(
-  "/",
+  "/signup",
   UserMiddleware.validateCreateRequestBody,
   UserController.createUser
 );
 
+/**
+ * route->  /api/v1/signin - POST
+ */
+router.post(
+  "/signin",
+  UserMiddleware.validateCreateRequestBody,
+  UserController.signin
+);
 module.exports = router;
