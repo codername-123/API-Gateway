@@ -12,3 +12,5 @@ router.post(
   UserMiddleware.validateCreateRequestBody,
   UserController.createUser
 );
+
+module.exports = router;
