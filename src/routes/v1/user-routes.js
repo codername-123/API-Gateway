@@ -21,4 +21,15 @@ router.post(
   UserMiddleware.validateCreateRequestBody,
   UserController.signin
 );
+
+/**
+ * route->  /api/v1/addrole - POST
+ */
+router.post(
+  "/role",
+  UserMiddleware.validateAddRoleRequestBody,
+  UserMiddleware.checkAuth,
+  UserMiddleware.isAdmin,
+  UserController.addRoleToUser
+);
 module.exports = router;

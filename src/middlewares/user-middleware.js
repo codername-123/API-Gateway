@@ -28,7 +28,31 @@ async function checkAuth(req, res, next) {
     return res.status(error.statuscode).json(error);
   }
 }
+
+function validateAddRoleRequestBody(req, res, next) {
+  if (!req.body.id || !req.body.role) {
+    ErrorResponse.message = "Something went wrong";
+    ErrorResponse.error = new AppError(
+      "Incorrect request body",
+      StatusCodes.BAD_REQUEST
+    );
+    return res.status(ErrorResponse.error.statuscode).json(ErrorResponse);
+  }
+  next();
+}
+
+async function isAdmin(req, res, next) {
+  const response = await UserService.isAdmin(req.user);
+  if (!response) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "You are not authorized" });
+  }
+  next();
+}
 module.exports = {
   validateCreateRequestBody,
   checkAuth,
+  isAdmin,
+  validateAddRoleRequestBody,
 };
