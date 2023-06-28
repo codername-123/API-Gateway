@@ -2,6 +2,7 @@ const express = require("express");
 const { ServerConfig } = require("./config");
 const rateLimit = require("express-rate-limit");
 const apiRoutes = require("./routes");
+const { UserMiddleware } = require("./middlewares");
 const {
   createProxyMiddleware,
   fixRequestBody,
@@ -21,8 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", apiRoutes);
 
 // Todo: add auth middlewares to connect to flight service and booking service also make the admin checks
+// Todo: there has to be a better way to do this because all get routes in flight service don't require auth but in booking service
+// Todo: if user has to see there bookings then that be a get request which would require auth
+// Todo: also for booking admin check is not required(maybe) because it would be the user creating the bookings
 app.use(
   "/flightservice",
+  UserMiddleware.checkAuth,
+  UserMiddleware.isAuthorized,
   createProxyMiddleware({
     target: ServerConfig.FLIGHT_SERVICE,
     changeOrigin: true,
@@ -30,11 +36,12 @@ app.use(
       "^/flightservice": "",
     },
     onProxyReq: fixRequestBody,
-    auth: true,
   })
 );
 app.use(
   "/bookingservice",
+  UserMiddleware.checkAuth,
+  UserMiddleware.isAuthorized,
   createProxyMiddleware({
     target: ServerConfig.BOOKING_SERVICE,
     changeOrigin: true,
