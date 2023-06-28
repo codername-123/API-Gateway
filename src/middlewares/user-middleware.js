@@ -41,9 +41,10 @@ function validateAddRoleRequestBody(req, res, next) {
   next();
 }
 
-async function isAdmin(req, res, next) {
-  const response = await UserService.isAdmin(req.user);
-  if (!response) {
+async function isAuthorized(req, res, next) {
+  const admin = await UserService.isAdmin(req.user);
+  const flightCompany = await UserService.isFlightCompany(req.user);
+  if (!admin && !flightCompany) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: "You are not authorized" });
@@ -53,6 +54,6 @@ async function isAdmin(req, res, next) {
 module.exports = {
   validateCreateRequestBody,
   checkAuth,
-  isAdmin,
+  isAuthorized,
   validateAddRoleRequestBody,
 };

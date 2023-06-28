@@ -29,7 +29,7 @@ router.post(
   "/role",
   UserMiddleware.validateAddRoleRequestBody,
   UserMiddleware.checkAuth,
-  UserMiddleware.isAdmin,
+  UserMiddleware.isAuthorized,
   UserController.addRoleToUser
 );
 module.exports = router;
