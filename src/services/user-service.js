@@ -136,10 +136,38 @@ async function isAdmin(id) {
     );
   }
 }
+
+async function isFlightCompany(id) {
+  try {
+    const user = await userRepository.get(id);
+    if (!user) {
+      throw new AppError(
+        "No user found for the given Id",
+        StatusCodes.NOT_FOUND
+      );
+    }
+    const role = await roleRepository.getRoleByName(
+      Enum.USER_ROLES.FLIGHT_COMPANY
+    );
+    if (!role) {
+      throw new AppError("No role found", StatusCodes.NOT_FOUND);
+    }
+    return await user.hasRole(role);
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw new AppError(
+      "Something went wrong",
+      StatusCodes.INTERNAL_SERVER_ERROR
+    );
+  }
+}
 module.exports = {
   createUser,
   signin,
   isAuthenticated,
   addRoleToUser,
   isAdmin,
+  isFlightCompany,
 };
